@@ -1,4 +1,5 @@
 package ru.fefu.fitness
+
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
