@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:fillViewport="true">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp">
+
+        <ImageView
+            android:id="@+id/BackButton"
+            android:layout_width="26dp"
+            android:layout_height="27dp"
+            android:contentDescription= "Назад"
+            android:src="@drawable/arrow"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <TextView
+            android:id="@+id/exitTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Вход"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintHorizontal_bias="0.128"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/bicycleImage"
+            android:layout_width="398dp"
+            android:layout_height="223dp"
+            android:layout_marginTop="50dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_registration_bicycles"
+            app:layout_constraintHorizontal_bias="0.526"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/exitTitle" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/caseLogin"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="Логин"
+            android:textColorHint="@color/gray"
+            app:layout_constraintTop_toBottomOf="@id/bicycleImage"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="50dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/textLogin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/casePassword"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="Пароль"
+            android:textColorHint="@color/gray"
+            app:passwordToggleEnabled="true"
+            app:layout_constraintTop_toBottomOf="@id/caseLogin"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="16dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/textPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPassword"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/Loginbutton"
+            android:layout_width="379dp"
+            android:layout_height="58dp"
+            android:text="Войти"
+            app:cornerRadius="4dp"
+            app:backgroundTint="@color/purple"
+            app:layout_constraintTop_toBottomOf="@id/casePassword"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="32dp"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>
