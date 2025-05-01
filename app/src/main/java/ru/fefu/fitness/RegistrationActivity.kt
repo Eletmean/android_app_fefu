@@ -8,7 +8,6 @@ import android.app.Activity
 import android.content.Intent
 import android.widget.Button
 
-
 class RegistrationActivity : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,6 +34,7 @@ class RegistrationActivity : Activity() {
         if (privacyStartIndex != -1) {
             spannableContent.setSpan(
                 CustomClickableSpan(this) {
+                    // обработка нажатия на политику
                 },
                 privacyStartIndex, privacyEndIndex,
                 SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE

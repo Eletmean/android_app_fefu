@@ -21,6 +21,5 @@ class ProfileFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         view.findViewById<TextView>(R.id.profile).text = "Профиль"
-    }git add .
-
+    }
 }
