@@ -1,5 +1,6 @@
 package ru.fefu.fitness
 
+
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -17,8 +18,8 @@ class MainNavigationActivity : AppCompatActivity() {
 
         bottomNavigation.setOnItemSelectedListener { item ->
             when (item.itemId) {
-                R.id.activity_tab -> switchToFragment(ActivityFragment.TAG) { ActivityFragment() }
-                R.id.profile_tab  -> switchToFragment(ProfileFragment.TAG)  { ProfileFragment() }
+                R.id.activity_tab -> switchToFragment(ActivityFragment.TAG, ::ActivityFragment)
+                R.id.profile_tab -> switchToFragment(ProfileFragment.TAG, ::ProfileFragment)
                 else -> false
             }
         }
@@ -31,12 +32,14 @@ class MainNavigationActivity : AppCompatActivity() {
     }
 
     private fun switchToFragment(tag: String, fragmentFactory: () -> Fragment): Boolean {
-        val fragmentManager = supportFragmentManager
-        val currentFragment = fragmentManager.fragments.find { it.isVisible }
-        val targetFragment = fragmentManager.findFragmentByTag(tag)
+        val currentFragment = supportFragmentManager.fragments.find { it.isVisible }
 
-        fragmentManager.beginTransaction().apply {
-            currentFragment?.takeIf { it != targetFragment }?.let { hide(it) }
+        val targetFragment = supportFragmentManager.findFragmentByTag(tag)
+
+        supportFragmentManager.beginTransaction().apply {
+            if (currentFragment != null && currentFragment != targetFragment) {
+                hide(currentFragment)
+            }
 
             if (targetFragment != null) {
                 show(targetFragment)

@@ -1,8 +1,9 @@
 package ru.fefu.fitness
 
-import android.os.Bundle
+
 import android.app.Activity
 import android.content.Intent
+import android.os.Bundle
 import android.widget.Button
 import android.widget.ImageView
 
@@ -11,11 +12,12 @@ class LoginActivity : Activity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.login_page)
 
-        val backArrow = findViewById<ImageView>(R.id.Arrow)
+        val backArrow = findViewById<ImageView>(R.id.imageArrow)
         backArrow.setOnClickListener {
             finish()
         }
-        val signInButton = findViewById<Button>(R.id.Buttologin)
+
+        val signInButton = findViewById<Button>(R.id.signInButton)
         signInButton.setOnClickListener {
             val intent = Intent(this, MainNavigationActivity::class.java)
 

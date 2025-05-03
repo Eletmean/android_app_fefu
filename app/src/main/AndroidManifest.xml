@@ -20,18 +20,22 @@
             android:exported="false" />
         <activity
             android:name=".MainNavigationActivity"
-            android:exported="false" />
+            android:exported="false"/>
         <activity
             android:name=".ActivityDetails"
-            android:exported="false" />
+            android:exported="false"/>
+        <activity
+            android:name=".NewestActivity"
+            android:exported="true" />
         <activity
             android:name=".WelcomeActivity"
-            android:exported="true">
+            android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
     </application>
 
 </manifest>
