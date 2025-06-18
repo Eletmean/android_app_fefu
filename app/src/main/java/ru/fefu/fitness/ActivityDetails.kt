@@ -1,9 +1,10 @@
 package ru.fefu.fitness
 
+
 import android.os.Bundle
-import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 
 class ActivityDetails : AppCompatActivity() {
@@ -11,37 +12,34 @@ class ActivityDetails : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_details)
 
-        val activityTypeTextView = findViewById<TextView>(R.id.titleText)
-        val activityDistanceTextView = findViewById<TextView>(R.id.distanceText)
-        val activityTimeAgoTextView = findViewById<TextView>(R.id.timeAgoText)
-        val activityDurationTextView = findViewById<TextView>(R.id.durationText)
-        val activityTimeRangeTextView = findViewById<TextView>(R.id.timeRangeText)
-        val activityUsernameTextView = findViewById<TextView>(R.id.usernameText)
-        val backButtonImageView = findViewById<ImageView>(R.id.Arrow)
+        val titleText = findViewById<TextView>(R.id.titleText)
+        val distanceText = findViewById<TextView>(R.id.distanceText)
+        val timeAgoText = findViewById<TextView>(R.id.timeAgoText)
+        val durationText = findViewById<TextView>(R.id.durationText)
+        val startTimeText = findViewById<TextView>(R.id.startTimeText)
+        val finishTimeText = findViewById<TextView>(R.id.finishTimeText)
+        val usernameText = findViewById<TextView>(R.id.usernameText)
 
+        val activity = intent.getSerializableExtra("ACTIVITY") as? Activity
 
-        val activityData = intent.getParcelableExtra<ActivityItem.ActivityMain>("ACTIVITY_MAIN")
+        activity?.let {
+            titleText.text = it.type
+            distanceText.text = it.distance
+            timeAgoText.text = it.timeAgo
+            durationText.text = it.duration
+            startTimeText.text = if (activity.startTime.isBlank()) "00:25" else activity.startTime
+            finishTimeText.text = if (activity.finishTime.isBlank()) "|  00:50" else "|  " + it.finishTime
 
-        activityData?.let { activity ->
-
-            activityTypeTextView.text = activity.type
-            activityDistanceTextView.text = activity.distance
-            activityTimeAgoTextView.text = activity.timeAgo
-            activityDurationTextView.text = activity.duration
-
-
-            activityTimeRangeTextView.text = activity.timeRange ?: "Старт 14:49  |  Финиш 16:31"
-
-
-            if (activity.isFromOtherUser && !activity.username.isNullOrEmpty()) {
-                activityUsernameTextView.visibility = View.VISIBLE
-                activityUsernameTextView.text = activity.username
+            if (it.isFromOtherUser == true && !it.user.isNullOrEmpty()) {
+                usernameText.visibility = View.VISIBLE
+                usernameText.text = it.user
             } else {
-                activityUsernameTextView.visibility = View.GONE
+                usernameText.visibility = View.GONE
             }
         }
 
-        backButtonImageView.setOnClickListener {
+        val buttonBack = findViewById<ImageView>(R.id.Arrow)
+        buttonBack.setOnClickListener {
             finish()
         }
     }

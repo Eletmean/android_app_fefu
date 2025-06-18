@@ -1,92 +1,112 @@
 package ru.fefu.fitness
 
 import android.annotation.SuppressLint
-import androidx.recyclerview.widget.RecyclerView
-import android.view.View
-import android.widget.TextView
-import android.view.ViewGroup
 import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.TextView
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
+import androidx.recyclerview.widget.RecyclerView
 
 class ActivityAdapter(
-    private var activities: List<ActivityItem>,
-    private val onActivityClicked: (ActivityItem.ActivityMain) -> Unit
-) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    private val onItemClick: (Activity) -> Unit
+) : ListAdapter<Any, RecyclerView.ViewHolder>(ActivityDiffCallback()) {
 
     companion object {
-        private const val VIEW_TYPE_HEADER = 0
-        private const val VIEW_TYPE_ACTIVITY = 1
+        private const val TYPE_HEADER = 0
+        private const val TYPE_ACTIVITY = 1
     }
 
-    @SuppressLint("NotifyDataSetChanged")
-    fun updateActivities(newActivities: List<ActivityItem>) {
-        activities = newActivities.toMutableList()
-        notifyDataSetChanged()
+    fun submitActivities(activities: List<Activity>) {
+        val items = mutableListOf<Any>()
+
+        activities.groupBy { it.date }.forEach { (date, activitiesForDate) ->
+            items.add(date)
+            items.addAll(activitiesForDate)
+        }
+
+        submitList(items)
     }
 
     override fun getItemViewType(position: Int): Int {
-        return when (activities[position]) {
-            is ActivityItem.ActivityHeader -> VIEW_TYPE_HEADER
-            is ActivityItem.ActivityMain -> VIEW_TYPE_ACTIVITY
+        return when (getItem(position)) {
+            is String -> TYPE_HEADER
+            is Activity -> TYPE_ACTIVITY
+            else -> throw IllegalArgumentException("Invalid type at position $position")
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        val inflater = LayoutInflater.from(parent.context)
         return when (viewType) {
-            VIEW_TYPE_HEADER -> {
-                val headerView = inflater.inflate(R.layout.activity_iheader, parent, false)
-                HeaderViewHolder(headerView)
+            TYPE_HEADER -> {
+                val view = LayoutInflater.from(parent.context)
+                    .inflate(R.layout.activity_iheader, parent, false)
+                HeaderViewHolder(view)
             }
-            VIEW_TYPE_ACTIVITY -> {
-                val activityView = inflater.inflate(R.layout.activity_imain, parent, false)
-                ActivityViewHolder(activityView, onActivityClicked)
+            TYPE_ACTIVITY -> {
+                val view = LayoutInflater.from(parent.context)
+                    .inflate(R.layout.activity_imain, parent, false)
+                ActivityViewHolder(view, onItemClick)
             }
-            else -> throw IllegalArgumentException("Unknown view type")
+            else -> throw IllegalArgumentException("Invalid view type")
         }
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        when (val currentItem = activities[position]) {
-            is ActivityItem.ActivityHeader -> (holder as HeaderViewHolder).bind(currentItem)
-            is ActivityItem.ActivityMain -> (holder as ActivityViewHolder).bind(currentItem)
+        when (holder) {
+            is HeaderViewHolder -> holder.bind(getItem(position) as String)
+            is ActivityViewHolder -> holder.bind(getItem(position) as Activity)
         }
     }
 
-    override fun getItemCount(): Int = activities.size
+    class HeaderViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        private val dateText: TextView = view.findViewById(R.id.dateText)
 
-    class HeaderViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val headerDateTextView: TextView = itemView.findViewById(R.id.dateText)
-
-        fun bind(header: ActivityItem.ActivityHeader) {
-            headerDateTextView.text = header.date
+        fun bind(date: String) {
+            dateText.text = date
         }
     }
 
     class ActivityViewHolder(
-        itemView: View,
-        private val onActivityClick: (ActivityItem.ActivityMain) -> Unit
-    ) : RecyclerView.ViewHolder(itemView) {
+        view: View,
+        private val onItemClick: (Activity) -> Unit
+    ) : RecyclerView.ViewHolder(view) {
+        private val distanceText: TextView = view.findViewById(R.id.distanceText)
+        private val durationText: TextView = view.findViewById(R.id.durationText)
+        private val timeAgoText: TextView = view.findViewById(R.id.timeAgoText)
+        private val typeText: TextView = view.findViewById(R.id.typeText)
+        private val usernameText: TextView = view.findViewById(R.id.usernameText)
 
-        private val activityDistanceTextView: TextView = itemView.findViewById(R.id.distanceText)
-        private val activityDurationTextView: TextView = itemView.findViewById(R.id.durationText)
-        private val activityTimeAgoTextView: TextView = itemView.findViewById(R.id.timeAgoText)
-        private val activityTypeTextView: TextView = itemView.findViewById(R.id.typeText)
-        private val activityUsernameTextView: TextView = itemView.findViewById(R.id.usernameText)
+        fun bind(activity: Activity) {
+            distanceText.text = activity.distance
+            durationText.text = activity.duration
+            timeAgoText.text = if (activity.timeAgo.isBlank()) "Сейчас" else activity.timeAgo
+            typeText.text = activity.type
 
-        fun bind(activity: ActivityItem.ActivityMain) {
-            activityDistanceTextView.text = activity.distance
-            activityDurationTextView.text = activity.duration
-            activityTimeAgoTextView.text = activity.timeAgo
-            activityTypeTextView.text = activity.type
-
-            if (activity.isFromOtherUser && !activity.username.isNullOrEmpty()) {
-                activityUsernameTextView.visibility = View.VISIBLE
-                activityUsernameTextView.text = activity.username
+            if (activity.isFromOtherUser == true && !activity.user.isNullOrEmpty()) {
+                usernameText.visibility = View.VISIBLE
+                usernameText.text = activity.user
             } else {
-                activityUsernameTextView.visibility = View.GONE
+                usernameText.visibility = View.GONE
             }
 
-            itemView.setOnClickListener { onActivityClick(activity) }
+            itemView.setOnClickListener { onItemClick(activity) }
         }
+    }
+}
+
+class ActivityDiffCallback : DiffUtil.ItemCallback<Any>() {
+    override fun areItemsTheSame(oldItem: Any, newItem: Any): Boolean {
+        return when {
+            oldItem is String && newItem is String -> oldItem == newItem
+            oldItem is Activity && newItem is Activity -> oldItem.id == newItem.id
+            else -> false
+        }
+    }
+
+    @SuppressLint("DiffUtilEquals")
+    override fun areContentsTheSame(oldItem: Any, newItem: Any): Boolean {
+        return oldItem == newItem
     }
 }

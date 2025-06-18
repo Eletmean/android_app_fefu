@@ -1,11 +1,13 @@
 package ru.fefu.fitness
 
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -57,6 +59,13 @@ class StartFragment : Fragment() {
                 .replace(R.id.fragmentContainer, trackFragment)
                 .addToBackStack(null)
                 .commit()
+        }
+
+        val buttonBack = view.findViewById<ImageView>(R.id.Arrow)
+        buttonBack.setOnClickListener {
+            val intent = Intent(requireContext(), MainNavigationActivity::class.java)
+            startActivity(intent)
+            requireActivity().finish()
         }
     }
 }
